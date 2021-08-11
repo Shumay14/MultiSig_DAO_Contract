@@ -36,11 +36,5 @@ contract mulisig {
         
     }
 
-    function getUserBalance(address user) external view returns(uint) {
-     return balanceOf[user];
-    }
-
-    function addToBalance() external payable {
-     balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
-    }
+    
 }
