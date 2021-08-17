@@ -39,7 +39,7 @@ contract mulisig {
     }
 
     function signAgree (bool _answer) public {
-        // _answer = "true" or "false"
+        // _answer = true or false
         
         for (uint i = 0; i < ownersArr.length; i++) {
             if (ownersArr[i] == msg.sender) {
