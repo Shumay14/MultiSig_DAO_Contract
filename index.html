@@ -26,6 +26,16 @@
     <input type="text" id="setaddress"/>
   </div>
 
+  <table
+      id="stateTable"
+      class="table table-dark table-striped"
+      style="margin: 20px 0 50px 50px; width: 50%"
+    >
+    <tr> <td> Number </td> <td> Account </td> <td> SentEther </td> <td> Opinion </td> </tr>
+    <tr> <td> Number </td> <td> Account </td> <td> SentEther </td> <td>  </td> </tr>
+    
+  </table>
+
   <!-- sendEther -->
   <div>
     <button onclick="SendEther()">Send Ether</button>
@@ -48,11 +58,7 @@
 
   
 
-  <!-- listen event -->
-  <div>
-    <label>Event</label>
-    <div id="eventResult"></div>
-  </div>
+  
 </body>
 
 <script type="text/javascript">
@@ -61,6 +67,9 @@
   let web3;
   let account;
   let contract;
+
+  let result1;
+        
 
  async function init() {
 
@@ -202,6 +211,12 @@
     document.getElementById("contract").innerText = contract._address
     console.log(contract)
 
+    
+    contract.methods.ownersArr().call().then(console.log)
+    contract.methods.signs(account).call().then(function(_result1) {
+        result1 = _result1;
+    })
+    
   }
   
   
@@ -213,6 +228,19 @@
     .then(function(receipt){
         console.log(receipt)
     });
+    
+    let stateData;
+
+    stateData += `<tr> <td> ${result1} </td> <td> ${addr} </td> </tr>
+                <tr> <td> timestamp </td> <td> ${block.timestamp} </td> </tr>
+                <tr> <td> difficulty </td> <td> ${block.difficulty} </td> </tr>
+                <tr> <td> nonce </td> <td> ${block.nonce} </td> </tr>
+                <tr> <td> gasLimit </td> <td> ${block.gasLimit} </td> </tr>
+                <tr> <td> gasUsed </td> <td> ${block.gasUsed} </td> </tr>`;
+
+    document.getElementById("stateTable").innerHTML = stateData;
+
+    
   }
 
   function SendEther() {
