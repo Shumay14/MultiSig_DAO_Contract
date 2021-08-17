@@ -18,14 +18,14 @@ contract mulisig {
     
 
     // 컨트랙트로 이더 전송 & 참여한 계정만 보낼수 있음
-    function sendEther (uint amount) public payable {
+    function sendEther () public payable {
         
         bool check = false;
 
         for (uint i = 0; i < ownersArr.length; i++) {
             if (ownersArr[i] == msg.sender) {
-                balanceOf[msg.sender] += amount;
-                raisedAmount += amount; 
+                balanceOf[msg.sender] += msg.value;
+                raisedAmount += msg.value; 
                 check = true;
 
             } else if(ownersArr[i] != msg.sender){
