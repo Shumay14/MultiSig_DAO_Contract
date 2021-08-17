@@ -57,21 +57,6 @@ contract mulisig {
         }    
     }
 
-
-    // 참여 계정수에 따라 과반수 동의 조건 다름
-    // function agreeNum () {
-    //     if (ownersArr.length == 3 && agreeCount >= 2) {
-
-    //         withdraw();
-    //     }
-    //     else if (ownerArr.length == 2 && agreeCount >= 1) {
-    //         withdraw();
-    //     }
-    //     else if (ownerArr.length == 1 && agreeCount == 1) {
-    //         withdraw();
-    //     } 
-    // }
-
     
 
     // 투자대상으로 이더 전송
