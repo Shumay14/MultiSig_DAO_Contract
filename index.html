@@ -1,0 +1,260 @@
+<!Doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.2.3/milligram.min.css">
+
+<script src="./lib/web3.min.js"></script>
+<body>
+    
+
+  <!-- connect wallet -->
+  <div>
+    <button onclick="init()">Connect Wallet</button>
+    <div id="account"></div>
+  </div>
+
+  <!-- getContract -->
+  <div>
+    <button onclick="GetContract()">Get Contract Instance</button>
+    <div id="contract"></div>
+  </div>
+
+  <!-- setAddress -->
+  <div>
+    <button onclick="SetAddress()">Set Your Address</button>
+    <input type="text" id="setaddress"/>
+  </div>
+
+  <!-- sendEther -->
+  <div>
+    <button onclick="SendEther()">Send Ether</button>
+    <input type="number" id="sendether"/>
+  </div>
+
+  <!-- signAgree -->
+  <div>
+    <button onclick="SignAgree()">Consensus</button>
+    <input type="radio" name="sign" id="signagree" value="true"/> Agree
+    <input type="radio" name="sign" id="signdisagree" value="false"/> Disagree
+  </div>
+
+  <!-- withdraw to beneficiary -->
+  <div>
+    <button onclick="WithdrawTo()">Withdraw Ether</button>
+    <input type="text" id="withdrawbenefi" placeholder="beneficiary address"/> 
+    <input type="number" id="withdrawether" placeholder="amount of ether"/> 
+  </div>
+
+  
+
+  <!-- listen event -->
+  <div>
+    <label>Event</label>
+    <div id="eventResult"></div>
+  </div>
+</body>
+
+<script type="text/javascript">
+
+  let provider;
+  let web3;
+  let account;
+  let contract;
+
+ async function init() {
+
+  if (window.ethereum) {
+      web3 = new Web3(window.ethereum);
+      try {
+        // Request account access if needed
+        await window.ethereum.enable();
+        // Acccounts now exposed
+        web3.eth.getAccounts().then(function(accounts){
+          account = accounts[0]
+          document.getElementById("account").innerText = account
+        })
+      } catch (error) {
+      }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      // Use Mist/MetaMask's provider.
+      web3 = window.web3;
+      console.log("Injected web3 detected.");
+    }
+  }
+  
+  function GetContract() {
+      
+    let abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "ownersArr",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "sendEther",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "setAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_answer",
+				"type": "bool"
+			}
+		],
+		"name": "signAgree",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "signs",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "beneficiary",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "withdraw_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+    ]
+
+    contract = new web3.eth.Contract(abi, "0xe1D0463be83BfB74fC4C14b3916Effe54F114908")
+    document.getElementById("contract").innerText = contract._address
+    console.log(contract)
+
+  }
+  
+  
+  function SetAddress() {
+    let addr = document.getElementById("setaddress").value
+    contract.methods.setAddress(addr).send(
+      {from: account}
+    )
+    .then(function(receipt){
+        console.log(receipt)
+    });
+  }
+
+  function SendEther() {
+    let ether = document.getElementById("sendether").value
+    
+    contract.methods.sendEther().send(
+      {from: account, value: web3.utils.toWei(ether, "ether")}
+    ) 
+    
+  }
+
+  function SignAgree() {
+    //   let sign = document.getElementByName("signagree").value
+      let sign = document.querySelector('input[name="sign"]:checked').value; // 체크된 값(checked value)
+      console.log(typeof sign);
+      let param;  
+      if(sign == 'true'){
+        param = true;
+      }else if(sign == 'false'){
+        param = false;
+      }
+      contract.methods.signAgree(param).send(
+          {from: account}
+      )
+
+  }
+
+  function WithdrawTo() {
+      let beneficiary = document.getElementById("withdrawbenefi").value
+      let amountether = document.getElementById("withdrawether").value
+
+      contract.methods.withdraw(beneficiary, amountether).send(
+          {from: account}
+      )
+
+  }
+
+  
+
+
+
+  
+
+</script>
+</html>

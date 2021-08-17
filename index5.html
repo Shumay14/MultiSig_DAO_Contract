@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="margin: 50px">
+      <input type="text" id="input_data" placeholder="BlockNumber / TxHash" />
+      <button onclick="searchData()">Search</button>
+    </div>
+
+    <table
+      id="blockTable"
+      class="table table-dark table-striped"
+      style="margin: 20px 0 50px 50px; width: 50%"
+    ></table>
+  </body>
+
+  <script type="text/javascript" src="./lib/bignumber.min.js"></script>
+  <script type="text/javascript" src="./lib/web3.js"></script>
+
+  <script type="text/javascript">
+    // if web3 is not undefined, set new web3 which is web3.currentprovider
+    if (typeof web3 !== "undefined") {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // set the provider you want from Web3.providers
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    }
+
+    if (web3.isConnected()) {
+      console.log("connected");
+    } else {
+      console.log("not connected");
+    }
+
+    function searchData() {
+      let inputData = document.getElementById("input_data").value;
+      console.log(inputData);
+      console.log(typeof inputData);
+      if (inputData.indexOf("0x") == -1) {
+        let inputDataa = Number(inputData);
+        // let blocknumber = document.getElementById("input_data").value;
+        // web3.eth.getBlock(blocknumber, function (error, block) {
+        web3.eth.getBlock(inputDataa, function (error, block) {
+          console.log(block);
+          let blockData = `<tr> <td> key </td> <td> value </td> </tr>`;
+
+          blockData += `<tr> <td> hash </td> <td> ${block.hash} </td> </tr>
+                <tr> <td> timestamp </td> <td> ${block.timestamp} </td> </tr>
+                <tr> <td> difficulty </td> <td> ${block.difficulty} </td> </tr>
+                <tr> <td> nonce </td> <td> ${block.nonce} </td> </tr>
+                <tr> <td> gasLimit </td> <td> ${block.gasLimit} </td> </tr>
+                <tr> <td> gasUsed </td> <td> ${block.gasUsed} </td> </tr>`;
+
+          document.getElementById("blockTable").innerHTML = blockData;
+        });
+      } else if (inputData.indexOf("0x") == 0 && inputData.length > 42) {
+        console.log(inputData);
+
+        // let txHash = document.getElementById("input_data").value;
+        // web3.eth.getTransaction(txHash, function (error, tx) {
+        web3.eth.getTransaction(inputData, function (error, tx) {
+          console.log(tx);
+          console.log(error);
+
+          let blockData = `<tr> <td> key </td> <td> value </td> </tr>`;
+          blockData += `
+          <tr> <td> blockNumber </td> <td> ${tx.blockNumber} </td> </tr>
+          <tr> <td> from </td> <td> ${tx.from} </td> </tr>
+          <tr> <td> hash </td> <td> ${tx.hash} </td> </tr>
+          <tr> <td> nonce </td> <td> ${tx.nonce} </td> </tr>
+          <tr> <td> to </td> <td> ${tx.to} </td> </tr>`;
+
+          document.getElementById("blockTable").innerHTML = blockData;
+        });
+      } else if (inputData.indexOf("0x") == 0 && inputData.length <= 42) {
+        console.log(inputData);
+
+        let balance;
+        balance = web3.fromWei(web3.eth.getBalance(inputData)) + "ETH";
+
+        let blockData = `<tr> <td> Address </td> <td> Balance </td> </tr>`;
+
+        blockData += `
+            <tr> <td> ${inputData} </td> <td> ${balance} </td> </tr>
+            `;
+
+        document.getElementById("blockTable").innerHTML = blockData;
+      }
+    }
+
+    console.log(web3.eth.blockNumber);
+
+    let X = "0x4d0c8b5ff8aa153004204ee8a33b56f8b0460bc6";
+    console.log(X.length);
+    let Y =
+      "0x391e21cf30d5a9e152a8e42a7adf22207e1c7d52d59c646f03681db2332e7198";
+    console.log(Y.length);
+
+    // searchData();
+  </script>
+</html>
