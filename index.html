@@ -31,9 +31,8 @@
       class="table table-dark table-striped"
       style="margin: 20px 0 50px 50px; width: 50%"
     >
-    <tr> <td> Number </td> <td> Account </td> <td> SentEther </td> <td> Opinion </td> </tr>
-    <tr> <td> Number </td> <td> Account </td> <td> SentEther </td> <td>  </td> </tr>
-    
+    <th> <td> Number </td> <td> Account </td> <td> SentEther </td> <td> Opinion </td> </th>
+        
   </table>
 
   <!-- sendEther -->
@@ -68,7 +67,7 @@
   let account;
   let contract;
 
-  let result1;
+  let signs_result;
         
 
  async function init() {
@@ -213,8 +212,8 @@
 
     
     contract.methods.ownersArr().call().then(console.log)
-    contract.methods.signs(account).call().then(function(_result1) {
-        result1 = _result1;
+    contract.methods.signs(account).call().then(function(signs_result) {
+        signs_result = _signs_result;
     })
     
   }
@@ -256,6 +255,7 @@
     //   let sign = document.getElementByName("signagree").value
       let sign = document.querySelector('input[name="sign"]:checked').value; // 체크된 값(checked value)
       console.log(typeof sign);
+
       let param;  
       if(sign == 'true'){
         param = true;

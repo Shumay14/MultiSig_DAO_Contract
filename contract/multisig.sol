@@ -9,7 +9,7 @@ contract mulisig {
     uint raisedAmount;
 
     
-    // 참여계정 등록 최대 3개
+    // enroll accounts address max 3
     function setAddress (address _address) public {
         
         require(ownersArr.length <= 3);
@@ -17,7 +17,7 @@ contract mulisig {
     }
     
 
-    // 컨트랙트로 이더 전송 & 참여한 계정만 보낼수 있음
+    // send ether to contract & only allowed for enrolled accounts
     function sendEther () public payable {
         
         bool check = false;
@@ -59,8 +59,8 @@ contract mulisig {
 
     
 
-    // 투자대상으로 이더 전송
-    // + 2명이상 동의시 전송 가능
+    // send ether to beneficiary from contract
+    // need more than 2 account agree for sending ether
     function withdraw (address beneficiary, uint withdraw_amount) public {
         require(agreeCount >= 2);
         require(address(this).balance >= withdraw_amount);
