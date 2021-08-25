@@ -3,36 +3,10 @@ pragma solidity 0.8.6;
 contract mulisig {
     
     address[] public ownersArr;
-    uint agreeCount = 0;
-    uint raisedAmount;
-    uint deadline;
-    uint period;
-
     mapping(address => bool) public signs;
+    uint agreeCount = 0;
     mapping(address => uint) public balanceOf;
-
-
-    // set fundable period
-    function setPeriod (uint _period) public {
-        
-
-        period = _period * days
-        deadline = block.timestamp + period;
-    }
-
-    // close pool
-    function closePool () public {
-        bool opened = true;
-
-        if (block.timestamp < deadline) {
-            opened = true;
-        }
-        else if (block.timestamp >= deadline) {
-            opened = false;
-            ownersArr != msg.sender;
-        }
-    } 
-    
+    uint raisedAmount;
 
     
     // enroll accounts address max 3
@@ -86,7 +60,7 @@ contract mulisig {
     
 
     // send ether to beneficiary from contract
-    // need more than 2 accounts agree for sending ether
+    // need more than 2 account agree for sending ether
     function withdraw (address beneficiary, uint withdraw_amount) public {
         require(agreeCount >= 2);
         require(address(this).balance >= withdraw_amount);

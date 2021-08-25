@@ -23,10 +23,10 @@
   </div>
 
   <!-- setAddress -->
-  <!-- <div>
+  <div>
     <button onclick="SetAddress()">Set Your Address</button>
     <input type="text" id="setaddress"/>
-  </div> -->
+  </div>
 
   <div>
       <!-- <th> <td> Number </td> <td> Account </td> <td> SentEther </td> <td> Opinion </td> </th> -->
@@ -102,6 +102,19 @@ async function GetContract() {
       
     let abi = [
 	{
+		"inputs": [],
+		"name": "agreeCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -141,22 +154,22 @@ async function GetContract() {
 	},
 	{
 		"inputs": [],
-		"name": "sendEther",
-		"outputs": [],
-		"stateMutability": "payable",
+		"name": "raisedAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "setAddress",
+		"inputs": [],
+		"name": "sendEther",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -210,7 +223,7 @@ async function GetContract() {
 		"type": "function"
 	}
 ]
-    contract = await new web3.eth.Contract(abi, "0xd9145CCE52D386f254917e481eB44e9943F39138")
+    contract = await new web3.eth.Contract(abi, "0xee0Abca89eDd4689f5BACe65486b8cB8d5E61077")
     document.getElementById("contract").innerText = contract._address
     console.log(contract)
 
@@ -218,7 +231,6 @@ async function GetContract() {
     // raised_result
     // document.getElementById("").innerText = web3.fromWei(eth.getBalance(this))
 
-    
     // contract.methods.ownersArr().call().then(console.log)
     // contract.methods.signs(account).call().then(function(signs_result) {
     //     signs_result = _signs_result;
@@ -232,7 +244,7 @@ async function GetContract() {
   
   async function getList() {
 
-    raised_result = await web3.eth.getBalance("0xd9145CCE52D386f254917e481eB44e9943F39138")
+    raised_result = await web3.eth.getBalance("0xee0Abca89eDd4689f5BACe65486b8cB8d5E61077")
     document.getElementById("raised").innerText = raised_result
 
         let ownerArr = []
@@ -268,16 +280,16 @@ async function GetContract() {
         document.getElementById("stateTable").innerHTML = stateData;
   }
 
-//   function SetAddress() {
-//     let addr = document.getElementById("setaddress").value
-//     console.log('addr', addr)
-//     contract.methods.setAddress(addr).send(
-//       {from: account}
-//     )
-//     .then(function(receipt){
-//         console.log(receipt)
-//         getList()
-//     });
+  function SetAddress() {
+    let addr = document.getElementById("setaddress").value
+    console.log('addr', addr)
+    contract.methods.setAddress(addr).send(
+      {from: account}
+    )
+    .then(function(receipt){
+        console.log(receipt)
+        getList()
+    });
 
     
 //   }
@@ -286,7 +298,7 @@ async function GetContract() {
     let ether = document.getElementById("sendether").value
     
     contract.methods.sendEther().send(
-      {from: account, value: web3.utils.toEther(ether, "ether")}
+      {from: account, value: web3.utils.toWei(ether, "ether")}
     ).then(function(receipt){
         console.log(receipt)
         getList()

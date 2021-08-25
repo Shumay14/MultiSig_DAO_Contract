@@ -2,48 +2,22 @@ pragma solidity 0.8.6;
 
 contract mulisig {
     
-    address[] public ownersArr;
-    uint agreeCount = 0;
-    uint raisedAmount;
-    uint deadline;
-    uint period;
-
+    address[3] public ownersArr = [0x9EC9AC831FA8D419FDBf2789CaDe45A79689Ffb7, 0x46cf36F0dea6158F5cA9540ad0cEcaE1bBECfd09, 0xE63a104874b11a32EA8E74C427248CE82342A6d4];
     mapping(address => bool) public signs;
+    uint public agreeCount = 0;
     mapping(address => uint) public balanceOf;
+    uint public raisedAmount;
 
-
-    // set fundable period
-    function setPeriod (uint _period) public {
+    
+    // 참여계정 등록 최대 3개
+    // function setAddress (address _address) public {
         
-
-        period = _period * days
-        deadline = block.timestamp + period;
-    }
-
-    // close pool
-    function closePool () public {
-        bool opened = true;
-
-        if (block.timestamp < deadline) {
-            opened = true;
-        }
-        else if (block.timestamp >= deadline) {
-            opened = false;
-            ownersArr != msg.sender;
-        }
-    } 
+    //     require(ownersArr.length <= 3);
+    //     ownersArr.push(_address);
+    // }
     
 
-    
-    // enroll accounts address max 3
-    function setAddress (address _address) public {
-        
-        require(ownersArr.length <= 3);
-        ownersArr.push(_address);
-    }
-    
-
-    // send ether to contract & only allowed for enrolled accounts
+    // 컨트랙트로 이더 전송 & 참여한 계정만 보낼수 있음
     function sendEther () public payable {
         
         bool check = false;
@@ -65,7 +39,7 @@ contract mulisig {
     }
 
     function signAgree (bool _answer) public {
-        // _answer = true or false
+        // _answer = "true" or "false"
         
         for (uint i = 0; i < ownersArr.length; i++) {
             if (ownersArr[i] == msg.sender) {
@@ -85,14 +59,11 @@ contract mulisig {
 
     
 
-    // send ether to beneficiary from contract
-    // need more than 2 accounts agree for sending ether
+    // 투자대상으로 이더 전송
+    // + 2명이상 동의시 전송 가능
     function withdraw (address beneficiary, uint withdraw_amount) public {
         require(agreeCount >= 2);
         require(address(this).balance >= withdraw_amount);
         payable(beneficiary).transfer(withdraw_amount);
         
     }
-
-    
-}

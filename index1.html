@@ -102,6 +102,19 @@ async function GetContract() {
       
     let abi = [
 	{
+		"inputs": [],
+		"name": "agreeCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -141,22 +154,22 @@ async function GetContract() {
 	},
 	{
 		"inputs": [],
-		"name": "sendEther",
-		"outputs": [],
-		"stateMutability": "payable",
+		"name": "raisedAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "setAddress",
+		"inputs": [],
+		"name": "sendEther",
 		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -210,7 +223,7 @@ async function GetContract() {
 		"type": "function"
 	}
 ]
-    contract = await new web3.eth.Contract(abi, "0xd9145CCE52D386f254917e481eB44e9943F39138")
+    contract = await new web3.eth.Contract(abi, "0xe765b3816aeCff1823858BB4552F946d739957FB")
     document.getElementById("contract").innerText = contract._address
     console.log(contract)
 
@@ -232,7 +245,7 @@ async function GetContract() {
   
   async function getList() {
 
-    raised_result = await web3.eth.getBalance("0xd9145CCE52D386f254917e481eB44e9943F39138")
+    raised_result = await web3.eth.getBalance("0xe765b3816aeCff1823858BB4552F946d739957FB")
     document.getElementById("raised").innerText = raised_result
 
         let ownerArr = []
@@ -286,7 +299,7 @@ async function GetContract() {
     let ether = document.getElementById("sendether").value
     
     contract.methods.sendEther().send(
-      {from: account, value: web3.utils.toEther(ether, "ether")}
+      {from: account, value: web3.utils.toWei(ether, "ether")}
     ).then(function(receipt){
         console.log(receipt)
         getList()
